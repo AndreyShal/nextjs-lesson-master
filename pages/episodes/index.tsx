@@ -4,13 +4,28 @@ import {PageWrapper} from '../../components/PageWrapper/PageWrapper';
 import {Card} from '../../components/Card/Card';
 import {getLayout} from '../../components/Layout/BaseLayout/BaseLayout';
 
-export const getServerSideProps = async ({res}:any) => {
-    res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=100')
+const authMe = async () => {
+    const user = {}//axios.get('auth/me')
+
+    if (!user) {
+        return {
+            redirect: {
+                destination: '/test',
+                permanent: false
+            }
+        }
+    }
+}
+
+export const getServerSideProps = async ({res}: any) => {
+    // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=100')
+
+    await authMe()
 
     const episodes = await API.rickAndMorty.getEpisodes()
 
-    if(!episodes) {
-        return  {
+    if (!episodes) {
+        return {
             notFound: true
         }
     }
